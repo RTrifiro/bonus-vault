@@ -148,18 +148,6 @@
     }
     .card.pending .card-name { color: var(--muted); }
 
-    /* level pip */
-    .level-pip {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-    }
-    .pip-funsies  { background: var(--funsies); }
-    .pip-powerup  { background: var(--powerup); }
-    .pip-golden   { background: var(--golden); box-shadow: 0 0 4px var(--golden); }
-
     /* found checkmark */
     .found-badge {
       position: absolute;
@@ -360,6 +348,8 @@
   // 🔧 CONFIGURATION — paste your Sheet ID below
   // ─────────────────────────────────────────────
   const SHEET_ID = '1-0je4tbJFRZyVUPJNZURRvl6mGwjePBpbHJHluRgDYs';
+  // To find your Sheet ID: open the sheet, copy the long string
+  // between /d/ and /edit in the URL. Paste it above (keep the quotes).
   // ─────────────────────────────────────────────
 
   const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -428,7 +418,6 @@
       return;
     }
 
-    // Sort: active first, then pending, then found
     const order = { active: 0, pending: 1, found: 2 };
     const sorted = [...allBonuses].sort((a, b) => (order[a.status] ?? 1) - (order[b.status] ?? 1));
 
@@ -445,13 +434,11 @@
       ? `<img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">`
       : `<div class="card-icon-placeholder">🎲</div>`;
 
-    const pip = levelPip[b.level] ? `<div class="level-pip ${levelPip[b.level]}"></div>` : '';
     const foundBadge = b.status === 'found' ? `<span class="found-badge">✓</span>` : '';
     const nameDisplay = b.status === 'pending' ? '???' : b.name;
 
     return `
       <div class="card ${b.status}" data-id="${b.id}" role="button" tabindex="0" aria-label="${nameDisplay}">
-        ${pip}
         ${iconHTML}
         <div class="card-name">${nameDisplay}</div>
         ${foundBadge}
