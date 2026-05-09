@@ -450,11 +450,9 @@
     // Redeemed footer
     const redeemedEl = document.getElementById('modal-redeemed');
     if (b.status === 'found' && b.week_played) {
-      const weeks = String(b.week_played).split('|').map(w => w.trim()).filter(Boolean);
-      const count = weeks.length;
-      const weekLabels = weeks.map(w => w.toLowerCase().startsWith('week') ? w : `Week ${w}`).join(' & ');
-      const countStr = count > 1 ? `${count}× ` : '';
-      redeemedEl.textContent = `Redeemed ${countStr}: ${weekLabels}`;
+      const raw = String(b.week_played).trim();
+      const label = raw.toLowerCase().startsWith('week') ? raw : `Week ${raw}`;
+      redeemedEl.textContent = `Redeemed: ${label}`;
       redeemedEl.style.display = 'block';
     } else {
       redeemedEl.style.display = 'none';
