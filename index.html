@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Bonus Vault – The Frontal Lobe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f0f0f;
+      --surface:   #1a1a1a;
+      --surface2:  #242424;
+      --border:    rgba(255,255,255,0.08);
+      --red:       #e03030;
+      --red-dim:   #a02020;
+      --red-glow:  rgba(224,48,48,0.18);
+      --text:      #f0f0f0;
+      --muted:     #888;
+      --funsies:   #f5a623;
+      --powerup:   #7b6ef6;
+      --golden:    #f5c518;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 3rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 2.2rem 1.5rem 1.4rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--red);
+      border-radius: 2px;
+      margin: 0.9rem auto 0;
+    }
+    .site-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.2rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      line-height: 1;
+    }
+    h1 span { color: var(--red); }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1rem 1.5rem 0.5rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-active  { background: var(--red); }
+    .dot-pending { background: var(--surface2); border: 1px solid var(--border); }
+    .dot-found   { background: #2a2a2a; }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 1rem 1.2rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px 10px;
+      cursor: pointer;
+      transition: transform 0.12s, border-color 0.12s;
+      position: relative;
+      min-height: 96px;
+      gap: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card:active { transform: scale(0.95); }
+
+    .card.active  { border-color: rgba(224,48,48,0.5); box-shadow: 0 0 12px var(--red-glow); }
+    .card.pending { opacity: 0.38; filter: grayscale(1); }
+    .card.found   { opacity: 0.5; }
+    .card.found .card-icon { filter: grayscale(1); }
+
+    .card-icon {
+      width: 52px;
+      height: 44px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 8px;
+      filter: invert(1);
+    }
+    .card-icon-placeholder {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .card-name {
+      font-size: 11px;
+      font-weight: 500;
+      text-align: center;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .card.pending .card-name { color: var(--muted); }
+
+    /* level pip */
+    .level-pip {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .pip-funsies  { background: var(--funsies); }
+    .pip-powerup  { background: var(--powerup); }
+    .pip-golden   { background: var(--golden); box-shadow: 0 0 4px var(--golden); }
+
+    /* found checkmark */
+    .found-badge {
+      position: absolute;
+      bottom: 5px;
+      right: 6px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ── MODAL OVERLAY ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 480px;
+      padding: 1.6rem 1.5rem 2rem;
+      position: relative;
+      animation: slideUp 0.22s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(60px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 1.2rem;
+    }
+
+    .modal-icon-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .modal-icon {
+      width: 72px;
+      height: 61px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 14px;
+      filter: invert(1);
+    }
+    .modal-icon-placeholder {
+      width: 72px; height: 72px;
+      border-radius: 14px;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.04em;
+      text-align: center;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .modal-level {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      padding: 3px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .level-funsies  { background: rgba(245,166,35,0.15);  color: var(--funsies); }
+    .level-powerup  { background: rgba(123,110,246,0.15); color: var(--powerup); }
+    .level-golden   { background: rgba(245,197,24,0.12);  color: var(--golden);  }
+
+    .modal-desc {
+      font-size: 15px;
+      color: #ccc;
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-redeemed {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .modal-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--surface2);
+      border: none;
+      color: var(--muted);
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+
+    /* ── LOADING / ERROR ── */
+    .state-msg {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 3rem 1.5rem;
+    }
+    .state-msg .spinner {
+      width: 28px; height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── EMPTY SECTION ── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.5rem 1.2rem 0.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="site-eyebrow">The Frontal Lobe</p>
+  <h1>Bonus <span>Vault</span></h1>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-active"></div> In play</div>
+  <div class="legend-item"><div class="legend-dot dot-found" style="background:#555;"></div> Redeemed</div>
+  <div class="legend-item"><div class="legend-dot dot-pending"></div> Not yet released</div>
+</div>
+
+
+
+<div id="content">
+  <div class="state-msg"><div class="spinner"></div>Loading bonuses…</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div class="modal-icon-wrap" id="modal-icon-wrap"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-level" id="modal-level"></div>
+    <div class="modal-status-bar" id="modal-status-bar"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <div class="modal-redeemed" id="modal-redeemed"></div>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // 🔧 CONFIGURATION — paste your Sheet ID below
+  // ─────────────────────────────────────────────
+  const SHEET_ID = '1-0je4tbJFRZyVUPJNZURRvl6mGwjePBpbHJHluRgDYs';
+  // ─────────────────────────────────────────────
+
+  const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+  const levelClass = {
+    'Funsies':       'funsies',
+    'Power-Up':      'powerup',
+    'Golden Ticket': 'golden',
+  };
+  const levelPip = {
+    'Funsies':       'pip-funsies',
+    'Power-Up':      'pip-powerup',
+    'Golden Ticket': 'pip-golden',
+  };
+  const statusLabel = {
+    'active':  { label: 'In Play',   color: '#e03030' },
+    'found':   { label: 'Redeemed',  color: '#888' },
+    'pending': { label: 'Not Yet Released', color: '#444' },
+  };
+  const levelEmoji = {
+    'Funsies': '🟡',
+    'Power-Up': '🟣',
+    'Golden Ticket': '⭐',
+  };
+
+  let allBonuses = [];
+
+  // ── Fetch & parse Google Sheet ──
+  async function loadData() {
+    try {
+      const res = await fetch(SHEET_URL);
+      const text = await res.text();
+      // Strip Google's JSONP wrapper
+      const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+      const rows = json.table.rows;
+      const cols = json.table.cols.map(c => c.label.toLowerCase().trim());
+
+      allBonuses = rows.map(r => {
+        const get = key => {
+          const i = cols.indexOf(key);
+          return (i >= 0 && r.c[i] && r.c[i].v != null) ? String(r.c[i].v).trim() : '';
+        };
+        return {
+          id:          get('id'),
+          name:        get('name'),
+          level:       get('level'),
+          description: get('description'),
+          status:      get('status').toLowerCase() || 'pending',
+          week_played: get('week_played'),
+          icon_url:    get('icon_url'),
+        };
+      }).filter(b => b.name);
+
+      render();
+    } catch (e) {
+      document.getElementById('content').innerHTML =
+        `<div class="state-msg">⚠️ Could not load bonuses.<br><small>Check that your Sheet ID is set and the sheet is public.</small></div>`;
+    }
+  }
+
+  // ── Render grid ──
+  function render() {
+    if (!allBonuses.length) {
+      document.getElementById('content').innerHTML =
+        `<div class="state-msg">No bonuses found.</div>`;
+      return;
+    }
+
+    // Sort: active first, then pending, then found
+    const order = { active: 0, pending: 1, found: 2 };
+    const sorted = [...allBonuses].sort((a, b) => (order[a.status] ?? 1) - (order[b.status] ?? 1));
+
+    const html = `<div class="grid">${sorted.map(b => cardHTML(b)).join('')}</div>`;
+    document.getElementById('content').innerHTML = html;
+
+    document.querySelectorAll('.card').forEach(el => {
+      el.addEventListener('click', () => openModal(el.dataset.id));
+    });
+  }
+
+  function cardHTML(b) {
+    const iconHTML = b.icon_url
+      ? `<img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="card-icon-placeholder">🎲</div>`;
+
+    const pip = levelPip[b.level] ? `<div class="level-pip ${levelPip[b.level]}"></div>` : '';
+    const foundBadge = b.status === 'found' ? `<span class="found-badge">✓</span>` : '';
+    const nameDisplay = b.status === 'pending' ? '???' : b.name;
+
+    return `
+      <div class="card ${b.status}" data-id="${b.id}" role="button" tabindex="0" aria-label="${nameDisplay}">
+        ${pip}
+        ${iconHTML}
+        <div class="card-name">${nameDisplay}</div>
+        ${foundBadge}
+      </div>`;
+  }
+
+  // ── Modal ──
+  function openModal(id) {
+    const b = allBonuses.find(x => x.id === id);
+    if (!b) return;
+
+    // Icon
+    const iconWrap = document.getElementById('modal-icon-wrap');
+    iconWrap.innerHTML = b.icon_url
+      ? `<img class="modal-icon" src="${b.icon_url}" alt="${b.name}">`
+      : `<div class="modal-icon-placeholder">🎲</div>`;
+
+    // Title
+    document.getElementById('modal-title').textContent =
+      b.status === 'pending' ? '???' : b.name;
+
+    // Level badge
+    const lvlEl = document.getElementById('modal-level');
+    lvlEl.textContent = `${levelEmoji[b.level] || ''} ${b.level}`;
+    lvlEl.className = `modal-level level-${levelClass[b.level] || ''}`;
+
+    // Status bar
+    const s = statusLabel[b.status] || statusLabel['pending'];
+    document.getElementById('modal-status-bar').innerHTML =
+      `<div class="status-dot" style="background:${s.color}"></div><span>${s.label}</span>`;
+
+    // Description
+    document.getElementById('modal-desc').textContent =
+      b.status === 'pending' ? 'This bonus hasn\'t been released yet. Check back soon!' : (b.description || '');
+
+    // Redeemed footer
+    const redeemedEl = document.getElementById('modal-redeemed');
+    if (b.status === 'found' && b.week_played) {
+      const label = String(b.week_played).toLowerCase().startsWith('week')
+        ? b.week_played
+        : `Week ${b.week_played}`;
+      redeemedEl.textContent = `Redeemed: ${label}`;
+      redeemedEl.style.display = 'block';
+    } else {
+      redeemedEl.style.display = 'none';
+    }
+
+    document.getElementById('overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ── Go ──
+  loadData();
+</script>
+</body>
+</html>
