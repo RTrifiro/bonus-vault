@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Bonus Vault – The Frontal Lobe</title>
+  <title>The Bonus Vault – GCC Trivia League</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=Oxanium:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -450,7 +450,7 @@
     // Redeemed footer
     const redeemedEl = document.getElementById('modal-redeemed');
     if (b.status === 'found' && b.week_played) {
-      const weeks = String(b.week_played).split(',').map(w => w.trim()).filter(Boolean);
+      const weeks = String(b.week_played).split('/').map(w => w.trim()).filter(Boolean);
       const count = weeks.length;
       const weekLabels = weeks.map(w => w.toLowerCase().startsWith('week') ? w : `Week ${w}`).join(' & ');
       const countStr = count > 1 ? `${count}× ` : '';
