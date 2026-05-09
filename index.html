@@ -450,7 +450,7 @@
     // Redeemed footer
     const redeemedEl = document.getElementById('modal-redeemed');
     if (b.status === 'found' && b.week_played) {
-      const weeks = String(b.week_played).split('/').map(w => w.trim()).filter(Boolean);
+      const weeks = String(b.week_played).split('|').map(w => w.trim()).filter(Boolean);
       const count = weeks.length;
       const weekLabels = weeks.map(w => w.toLowerCase().startsWith('week') ? w : `Week ${w}`).join(' & ');
       const countStr = count > 1 ? `${count}× ` : '';
