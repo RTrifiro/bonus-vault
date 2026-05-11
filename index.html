@@ -118,7 +118,13 @@
     }
     .card:active { transform: scale(0.95); }
 
-    .card.active  { border-color: rgba(224,48,48,0.5); box-shadow: 0 0 12px var(--red-glow); }
+    /*
+    !! DO NOT CHANGE CARD BORDERS !!
+    LIVE cards only: pulsing red border via livePulse animation below.
+    ALL other cards (active, found, pending): subtle white border only —
+    rgba(255,255,255,0.08) — set on .card above. Never red, never glowing,
+    never any other color. This applies to every future edit, no exceptions.
+    */
     .card.pending { opacity: 0.38; filter: grayscale(1); }
     .card.found   { opacity: 0.5; }
     .card.found .card-icon { filter: grayscale(1); }
