@@ -86,16 +86,10 @@
       align-items: center;
       gap: 5px;
       font-size: 12px;
-      color: var(--muted);
     }
-    .legend-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .dot-active  { background: var(--red); }
-    .dot-pending { background: var(--surface2); border: 1px solid var(--border); }
-    .dot-found   { background: #2a2a2a; }
+    .legend-active  { color: var(--text); }
+    .legend-found   { color: #1a1a1a; -webkit-text-stroke: 0.4px #555; }
+    .legend-pending { color: var(--muted); }
 
     /* ── GRID ── */
     .grid {
@@ -124,6 +118,7 @@
     }
     .card:active { transform: scale(0.95); }
 
+    .card.active  { border-color: rgba(224,48,48,0.5); box-shadow: 0 0 12px var(--red-glow); }
     .card.pending { opacity: 0.38; filter: grayscale(1); }
     .card.found   { opacity: 0.5; }
     .card.found .card-icon { filter: grayscale(1); }
@@ -345,9 +340,9 @@
 </header>
 
 <div class="legend">
-  <div class="legend-item"><div class="legend-dot dot-active"></div> In play</div>
-  <div class="legend-item"><div class="legend-dot dot-found" style="background:#555;"></div> Redeemed</div>
-  <div class="legend-item"><div class="legend-dot dot-pending"></div> Not yet released</div>
+  <div class="legend-item legend-active">In play</div>
+  <div class="legend-item legend-found">Redeemed</div>
+  <div class="legend-item legend-pending">Not yet released</div>
 </div>
 
 <div id="content">
