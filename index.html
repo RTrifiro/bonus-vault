@@ -351,8 +351,8 @@
 
 <div class="legend">
   <div class="legend-item legend-active">In play</div>
-  <div class="legend-item legend-found">Redeemed</div>
   <div class="legend-item legend-pending">Not yet released</div>
+  <div class="legend-item legend-found">Redeemed</div>
 </div>
 
 <div id="content">
@@ -444,8 +444,8 @@
       return;
     }
 
-    // Sort: live first, then active, then found, then pending
-    const order = { live: 0, active: 1, found: 2, pending: 3 };
+    // Sort: live first, then active, then pending, then found
+    const order = { live: 0, active: 1, pending: 2, found: 3 };
     const sorted = [...allBonuses].sort((a, b) => (order[a.status] ?? 1) - (order[b.status] ?? 1));
 
     const html = `<div class="grid">${sorted.map(b => cardHTML(b)).join('')}</div>`;
