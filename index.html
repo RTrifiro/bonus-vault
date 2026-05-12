@@ -88,7 +88,7 @@
       font-size: 12px;
     }
     .legend-active  { color: var(--text); }
-    .legend-found   { color: #1a1a1a; -webkit-text-stroke: 0.4px #555; }
+    .legend-found   { color: var(--muted); }
     .legend-pending { color: var(--muted); }
 
     /* ── GRID ── */
@@ -126,8 +126,7 @@
     never any other color. This applies to every future edit, no exceptions.
     */
     .card.pending { opacity: 0.38; filter: grayscale(1); }
-    .card.found   { opacity: 0.5; }
-    .card.found .card-icon { filter: grayscale(1); }
+    .card.found   { opacity: 0.38; filter: grayscale(1); }
 
     /* ── LIVE card ── */
     .card.live {
@@ -340,7 +339,7 @@
 <body>
 
 <header>
-  <p class="site-eyebrow">The Frontal Lobe</p>
+  <p class="site-eyebrow">GCC Trivia League</p>
   <h1>Bonus <span>Vault</span></h1>
   <p class="vault-tagline">Bonuses marked 'In Play' can be hidden, awarded, earned, traded, sold, stolen, etc. Bonuses can move from 'Redeemed' to 'In Play' at any time. This page can, and will, change at any moment.</p>
 </header>
