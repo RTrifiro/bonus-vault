@@ -147,12 +147,27 @@
       color: var(--red);
     }
 
+    .card-icon-wrap {
+      position: relative;
+      width: 52px;
+      height: 44px;
+      flex-shrink: 0;
+    }
     .card-icon {
       width: 52px;
       height: 44px;
       object-fit: cover;
       object-position: top;
       border-radius: 8px;
+      filter: invert(1);
+    }
+    .card-lock-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
       filter: invert(1);
     }
     .card-icon-placeholder {
@@ -340,7 +355,7 @@
 <body>
 
 <header>
-  <p class="site-eyebrow">The Frontal Lobe</p>
+  <p class="site-eyebrow">GCC Trivia League</p>
   <h1>Bonus <span>Vault</span></h1>
   <p class="vault-tagline">Bonuses marked 'In Play' can be hidden, awarded, earned, traded, sold, stolen, etc. Bonuses can move from 'Redeemed' to 'In Play' at any time. This page can, and will, change at any moment.</p>
 </header>
@@ -452,9 +467,15 @@
     });
   }
 
+  const PADLOCK_URL = 'https://raw.githubusercontent.com/rtrifiro/bonus-vault/main/padlock.png';
+
   function cardHTML(b) {
+    const lockOverlay = b.status === 'pending'
+      ? `<img class="card-lock-overlay" src="${PADLOCK_URL}" alt="Locked" loading="lazy">`
+      : '';
+
     const iconHTML = b.icon_url
-      ? `<img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">`
+      ? `<div class="card-icon-wrap"><img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">${lockOverlay}</div>`
       : `<div class="card-icon-placeholder">🎲</div>`;
 
     const foundBadge = b.status === 'found' ? `<span class="found-badge">✓</span>` : '';
