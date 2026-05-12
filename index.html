@@ -167,12 +167,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: 26px;
-      height: 22px;
-      object-fit: cover;
-      object-position: top;
-      filter: brightness(0) invert(1);
+      height: 26px;
       z-index: 2;
       pointer-events: none;
+      opacity: 0.9;
     }
     .card-icon-placeholder {
       width: 52px;
@@ -475,7 +473,9 @@
 
   function cardHTML(b) {
     const lockOverlay = b.status === 'pending'
-      ? `<img class="card-lock-overlay" src="${PADLOCK_URL}" alt="Locked" loading="lazy">`
+      ? `<svg class="card-lock-overlay" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+           <path d="M18 10h-1V7A5 5 0 0 0 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-6 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-7H9V7a3 3 0 0 1 6 0v3z"/>
+         </svg>`
       : '';
 
     const iconHTML = b.icon_url
