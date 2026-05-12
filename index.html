@@ -125,8 +125,7 @@
     rgba(255,255,255,0.08) — set on .card above. Never red, never glowing,
     never any other color. This applies to every future edit, no exceptions.
     */
-    .card.pending { opacity: 0.38; }
-    .card.pending .card-icon { filter: grayscale(1) invert(1); }
+    .card.pending { opacity: 0.38; filter: grayscale(1); }
     .card.found   { opacity: 0.5; }
     .card.found .card-icon { filter: grayscale(1); }
 
@@ -148,12 +147,6 @@
       color: var(--red);
     }
 
-    .card-icon-wrap {
-      position: relative;
-      width: 52px;
-      height: 44px;
-      flex-shrink: 0;
-    }
     .card-icon {
       width: 52px;
       height: 44px;
@@ -161,17 +154,6 @@
       object-position: top;
       border-radius: 8px;
       filter: invert(1);
-    }
-    .card-lock-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 26px;
-      height: 26px;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0.9;
     }
     .card-icon-placeholder {
       width: 52px;
@@ -358,7 +340,7 @@
 <body>
 
 <header>
-  <p class="site-eyebrow">GCC Trivia League</p>
+  <p class="site-eyebrow">The Frontal Lobe</p>
   <h1>Bonus <span>Vault</span></h1>
   <p class="vault-tagline">Bonuses marked 'In Play' can be hidden, awarded, earned, traded, sold, stolen, etc. Bonuses can move from 'Redeemed' to 'In Play' at any time. This page can, and will, change at any moment.</p>
 </header>
@@ -470,17 +452,9 @@
     });
   }
 
-  const PADLOCK_URL = 'https://raw.githubusercontent.com/rtrifiro/bonus-vault/main/padlock.png';
-
   function cardHTML(b) {
-    const lockOverlay = b.status === 'pending'
-      ? `<svg class="card-lock-overlay" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-           <path d="M18 10h-1V7A5 5 0 0 0 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2zm-6 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-7H9V7a3 3 0 0 1 6 0v3z"/>
-         </svg>`
-      : '';
-
     const iconHTML = b.icon_url
-      ? `<div class="card-icon-wrap"><img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">${lockOverlay}</div>`
+      ? `<img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">`
       : `<div class="card-icon-placeholder">🎲</div>`;
 
     const foundBadge = b.status === 'found' ? `<span class="found-badge">✓</span>` : '';
