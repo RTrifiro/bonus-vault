@@ -163,13 +163,14 @@
     }
     .card-lock-overlay {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -60%);
-      width: 36px;
-      height: 36px;
-      object-fit: contain;
-      filter: invert(1) brightness(10);
+      top: 0;
+      left: 0;
+      width: 52px;
+      height: 44px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 8px;
+      filter: invert(1);
       z-index: 2;
       pointer-events: none;
     }
@@ -478,7 +479,7 @@
       : '';
 
     const iconHTML = b.icon_url
-      ? `<div class="card-icon-wrap"><img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'"></div>`
+      ? `<div class="card-icon-wrap"><img class="card-icon" src="${b.icon_url}" alt="${b.name}" loading="lazy" onerror="this.style.display='none'">${lockOverlay}</div>`
       : `<div class="card-icon-placeholder">🎲</div>`;
 
     const foundBadge = b.status === 'found' ? `<span class="found-badge">✓</span>` : '';
@@ -488,7 +489,6 @@
     return `
       <div class="card ${b.status}" data-id="${b.id}" role="button" tabindex="0" aria-label="${nameDisplay}">
         ${liveBadge}
-        ${lockOverlay}
         ${iconHTML}
         <div class="card-name">${nameDisplay}</div>
         ${foundBadge}
