@@ -125,7 +125,8 @@
     rgba(255,255,255,0.08) — set on .card above. Never red, never glowing,
     never any other color. This applies to every future edit, no exceptions.
     */
-    .card.pending { opacity: 0.38; filter: grayscale(1); }
+    .card.pending { opacity: 0.38; }
+    .card.pending .card-icon { filter: grayscale(1) invert(1); }
     .card.found   { opacity: 0.5; }
     .card.found .card-icon { filter: grayscale(1); }
 
