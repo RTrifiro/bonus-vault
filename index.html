@@ -88,8 +88,8 @@
       font-size: 12px;
     }
     .legend-active  { color: var(--text); opacity: 1; }
-    .legend-found   { color: var(--text); opacity: 0.05; }
-    .legend-pending { color: var(--text); opacity: 0.2; }
+    .legend-found   { color: var(--text); opacity: 0.2; }
+    .legend-pending { color: var(--text); opacity: 0.5; }
 
     /* ── GRID ── */
     .grid {
@@ -126,11 +126,11 @@
     This applies to every future edit, no exceptions.
     */
     .card.pending { background: #141414; }
-    .card.pending .card-icon { opacity: 0.2; }
-    .card.pending .card-icon-placeholder { opacity: 0.2; }
+    .card.pending .card-icon { opacity: 0.25; }
+    .card.pending .card-icon-placeholder { opacity: 0.25; }
     .card.found   { background: #0d0d0d; }
-    .card.found .card-icon { opacity: 0.05; }
-    .card.found .card-icon-placeholder { opacity: 0.05; }
+    .card.found .card-icon { opacity: 0.10; }
+    .card.found .card-icon-placeholder { opacity: 0.10; }
 
     /* ── LIVE card ── */
     .card.live {
@@ -176,8 +176,8 @@
       line-height: 1.3;
       word-break: break-word;
     }
-    .card.pending .card-name { opacity: 0.2; }
-    .card.found   .card-name { opacity: 0.05; }
+    .card.pending .card-name { opacity: 0.25; }
+    .card.found   .card-name { opacity: 0.1; }
 
     /* found checkmark */
     .found-badge {
@@ -350,9 +350,9 @@
 </header>
 
 <div class="legend">
-  <div class="legend-item legend-active">In play</div>
-  <div class="legend-item legend-pending">Not yet released</div>
-  <div class="legend-item legend-found">Redeemed</div>
+  <div class="legend-item legend-active">In Play = 100%</div>
+  <div class="legend-item legend-pending">Not Yet Released = 50%</div>
+  <div class="legend-item legend-found">Redeemed = 20%</div>
 </div>
 
 <div id="content">
